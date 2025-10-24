@@ -51,6 +51,8 @@ public class OverworldMenuBehaviour : MonoBehaviour
 
         if (menu_Active)
         {
+            EventsHandler.Instance.DisableMovement();
+
             if (Input.GetKeyDown(KeyCode.DownArrow))
                 index++;
 
@@ -83,6 +85,10 @@ public class OverworldMenuBehaviour : MonoBehaviour
                     ChangeState(MenuState.CELL);
                     break;
             }
+        }
+        else
+        {
+            EventsHandler.Instance.EnableMovement();
         }
     }
 

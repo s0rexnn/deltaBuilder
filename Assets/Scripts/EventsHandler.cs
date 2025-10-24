@@ -34,6 +34,38 @@ public class EventsHandler : MonoBehaviour
         SaveAndLoad();
     }
 
+   public void DisableMovement() // For cutscenes and dialogues
+    {
+        if (playerController != null)
+        {
+            playerController.SetIdleAnimation();
+            playerController.enabled = false;
+        }
+        if (partyFollowers != null)
+        {
+            foreach (var member in partyFollowers)
+            {
+                member.SetIdleAnimation();
+                member.enabled = false;
+            }
+        }
+    }
+    
+    public void EnableMovement()  // For cutscenes and dialogues
+    {
+        if (playerController != null)
+        {
+            playerController.enabled = true;
+        }
+        if (partyFollowers != null)
+        {
+            foreach (var member in partyFollowers)
+            {
+                member.enabled = true;
+            }
+        }
+    }
+
     private void SaveAndLoad()
     {
         if (Input.GetKeyDown(KeyCode.O))

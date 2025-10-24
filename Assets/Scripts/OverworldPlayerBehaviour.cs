@@ -41,7 +41,7 @@ public class OverworldPlayerBehaviour : MonoBehaviour
         if (anim == null)
             anim = GetComponent<Animator>();
 
-        Time.fixedDeltaTime = 1f / 30f; // consistent Deltarune feel
+        Time.fixedDeltaTime = 1f / 30f;
     }
 
     private void Update()
@@ -86,7 +86,7 @@ public class OverworldPlayerBehaviour : MonoBehaviour
             axisLock = AxisLock.None;
     }
 
-    private void HandleMovement()
+    public void HandleMovement()
     {
         float speed = 0f;
         bool sprintHeld = Input.GetKey(KeyCode.LeftShift);
@@ -123,7 +123,7 @@ public class OverworldPlayerBehaviour : MonoBehaviour
         rb.MovePosition(rb.position + moveDelta);
     }
 
-    private void HandleAnimations()
+    public void HandleAnimations()
     {
         anim.SetBool("isMoving", isMoving);
 
@@ -159,6 +159,16 @@ public class OverworldPlayerBehaviour : MonoBehaviour
             anim.speed = 1.3f;
         else
             anim.speed = 1.7f;
+    }
+
+    public void SetIdleAnimation()
+    {
+        if (anim == null) return;
+        
+        anim.SetBool("isMoving", false);
+        anim.SetFloat("moveX", lastMoveDir.x);
+        anim.SetFloat("moveY", lastMoveDir.y);
+        currentSpeed = 0f;
     }
 
     // Save / Load

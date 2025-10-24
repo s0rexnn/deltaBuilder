@@ -34,11 +34,11 @@ public class OverworldPartyMember : MonoBehaviour
     }
 
     private void FollowPlayer()
-    {     
+    {
         if (player.CurrentSpeed > 0.01f)
         {
             posList.Add(player.transform.position);
-            dirList.Add(player.InputDirection);
+            dirList.Add(player.InputDirection != Vector2.zero ? player.InputDirection : lastDir);
             spdList.Add(player.CurrentSpeed);
             lastDir = player.InputDirection;
             isMoving = true;
@@ -48,27 +48,31 @@ public class OverworldPartyMember : MonoBehaviour
             isMoving = false;
         }
 
-        if (posList.Count > followDelay && isMoving)
+        if (isMoving && posList.Count > followDelay)
         {
-            Vector3 targetPos = posList[0];
-            transform.position = targetPos;
+            transform.position = posList[0];
+            posList.RemoveAt(0);
+            dirList.RemoveAt(0);
+            spdList.RemoveAt(0);
+        }
 
+        if (posList.Count > followDelay * 2)
+        {
             posList.RemoveAt(0);
             dirList.RemoveAt(0);
             spdList.RemoveAt(0);
         }
     }
 
-     private void HandleAxisLock()
+    private void HandleAxisLock()
     {
         if (dirList.Count == 0)
         {
-           axisLock = AxisLock.None;
-           return;
+            axisLock = AxisLock.None;
+            return;
         }
 
         Vector2 dir = dirList[0];
-        
         bool hasX = Mathf.Abs(dir.x) > 0f;
         bool hasY = Mathf.Abs(dir.y) > 0f;
 
@@ -88,28 +92,34 @@ public class OverworldPartyMember : MonoBehaviour
             axisLock = AxisLock.None;
     }
 
-     private void HandleAnimations()
-     {
+    private void HandleAnimations()
+    {
         if (player == null || anim == null) return;
+
         Vector2 dir = dirList.Count > 0 ? dirList[0] : lastDir;
 
-        if (dirList.Count > 0)
-            lastDir = dir;
+        anim.SetBool("isMoving", isMoving);
+        anim.SetFloat("moveX", dir.x);
+        anim.SetFloat("moveY", dir.y);
 
-       anim.SetBool("isMoving", isMoving);
-       anim.SetFloat("moveX", dir.x);
-       anim.SetFloat("moveY", dir.y);
- 
+        if (axisLock == AxisLock.Horizontal)
+            anim.SetFloat("moveY", 0f);
+        else if (axisLock == AxisLock.Vertical)
+            anim.SetFloat("moveX", 0f);
 
-       if (axisLock == AxisLock.Horizontal)
-          anim.SetFloat("moveY", 0f);
-       else if (axisLock == AxisLock.Vertical)
-          anim.SetFloat("moveX", 0f);
+        float spd = player.CurrentSpeed;
+        if (spd <= 4f) anim.speed = 1f;
+        else if (spd <= 6f) anim.speed = 1.3f;
+        else anim.speed = 1.7f;
+    }
 
-
-      float spd = player.CurrentSpeed;
-      if (spd <= 4f) anim.speed = 1f;
-      else if (spd <= 6f) anim.speed = 1.3f;
-      else anim.speed = 1.7f;
-    } 
+    // Called by EventsHandler when movement is disabled (cutscenes, dialogues)
+    public void SetIdleAnimation()
+    {
+        if (anim == null) return;
+        isMoving = false;
+        anim.SetBool("isMoving", false);
+        anim.SetFloat("moveX", lastDir.x);
+        anim.SetFloat("moveY", lastDir.y);
+    }
 }

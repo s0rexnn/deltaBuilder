@@ -1750,6 +1750,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OverworldPartyMember
   followDelay: 8
   anim: {fileID: 805227589}
+  axisLock: 0
 --- !u!1 &1300120813
 GameObject:
   m_ObjectHideFlags: 0
