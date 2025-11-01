@@ -119,7 +119,5 @@ public class OverworldPartyMember : MonoBehaviour
         if (anim == null) return;
         isMoving = false;
         anim.SetBool("isMoving", false);
-        anim.SetFloat("moveX", lastDir.x);
-        anim.SetFloat("moveY", lastDir.y);
     }
 }

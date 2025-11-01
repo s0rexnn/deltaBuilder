@@ -40,6 +40,7 @@ public class EventsHandler : MonoBehaviour
         {
             playerController.SetIdleAnimation();
             playerController.enabled = false;
+            playerController.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
         }
         if (partyFollowers != null)
         {
